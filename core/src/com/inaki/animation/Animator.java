@@ -3,11 +3,18 @@ package com.inaki.animation;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+
+import java.awt.Image;
+import java.awt.Rectangle;
+import java.util.Vector;
 
 public class Animator extends ApplicationAdapter {
 
@@ -20,25 +27,39 @@ public class Animator extends ApplicationAdapter {
     Texture background,background2,background3,statue;
     SpriteBatch spriteBatch;
     TextureRegion[] walkUp,walkRight,walkDown,walkLeft;
-    Texture idle;
-    float posx,posy;
+    Texture idle,tretTexture;
+    float posx,posy,tretPosx,tretPosY;
+    Rectangle sword = new Rectangle();
+    Vector2 velocity = new Vector2();
     int map = 1;
     int lastMap;
     boolean mapChange = false;
-
+    boolean shoot = false;
+    String state = "";
+    Pixmap tretPixmap;
 
     // A variable for tracking elapsed time for the animation
     float stateTime;
 
     @Override
     public void create() {
+
         background = new Texture(Gdx.files.internal("templeBackground.jpg"));
         // Load the sprite sheet as a Texture
         posy = 680;
         posx = 580;
         walkSheet = new Texture(Gdx.files.internal("spritesheetLink2.png"));
         idle = new Texture(Gdx.files.internal("idle.PNG"));
-
+        tretPixmap = new Pixmap( 60, 20, Pixmap.Format.RGB888);
+        tretPixmap.setColor( Color.BLACK );
+        tretPixmap.fill();
+        tretTexture = new Texture(tretPixmap);
+        sword.height = 20;
+        sword.width = 60;
+        velocity.x = 15;
+        velocity.y = 15;
+        sword.x = (int) posx;
+        sword.y = (int) posy;
         // Use the split utility method to create a 2D array of TextureRegions. This is
         // possible because this sprite sheet contains frames of equal size and they are
         // all aligned.
@@ -103,7 +124,7 @@ public class Animator extends ApplicationAdapter {
             }
             if(map == 2){
                 posx = 950;
-                posy = 520;
+                posy = 220;
             }
             if(map == 3) {
                 posx = 700;
@@ -170,37 +191,108 @@ public class Animator extends ApplicationAdapter {
         TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
 
         if(Gdx.input.isKeyPressed(Input.Keys.UP)){
+            state = "up";
             walkAnimation = new Animation<TextureRegion>(0.075f, walkUp);
             spriteBatch.begin();
             posy = posy +10;
-            spriteBatch.draw(currentFrame, posx, posy); // Draw current frame at (50, 50)
+            spriteBatch.draw(currentFrame, posx, posy);
             spriteBatch.end();
         }
         else if(Gdx.input.isKeyPressed(Input.Keys.DOWN)){
+            state = "down";
             walkAnimation = new Animation<TextureRegion>(0.075f, walkDown);
             spriteBatch.begin();
             posy = posy -10;
-            spriteBatch.draw(currentFrame, posx, posy); // Draw current frame at (50, 50)
+            spriteBatch.draw(currentFrame, posx, posy);
             spriteBatch.end();
         }
         else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
+            state = "right";
             walkAnimation = new Animation<TextureRegion>(0.075f, walkRight);
             spriteBatch.begin();
             posx = posx+10;
-            spriteBatch.draw(currentFrame, posx, posy); // Draw current frame at (50, 50)
+            spriteBatch.draw(currentFrame, posx, posy);
             spriteBatch.end();
         }
         else if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
+            state = "left";
             walkAnimation = new Animation<TextureRegion>(0.075f, walkLeft);
             spriteBatch.begin();
             posx = posx-10;
-            spriteBatch.draw(currentFrame, posx, posy); // Draw current frame at (50, 50)
+            spriteBatch.draw(currentFrame, posx, posy);
             spriteBatch.end();
         }
         else{
+            state = "down";
             spriteBatch.begin();
-            spriteBatch.draw(idle, posx, posy); // Draw current frame at (50, 50)
+            spriteBatch.draw(idle, posx, posy);
             spriteBatch.end();
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.Q)) {
+            shoot = true;
+            switch (state){
+                case "up":
+                    tretPixmap = new Pixmap( 20, 50, Pixmap.Format.RGB888);
+                    tretPixmap.setColor( Color.BLACK );
+                    tretPixmap.fill();
+                    tretTexture = new Texture(tretPixmap);
+                    spriteBatch.begin();
+                    spriteBatch.draw(tretTexture, sword.x+40, sword.y + 40);
+                    spriteBatch.end();
+                    break;
+                case "down":
+                    tretPixmap = new Pixmap( 20, 50, Pixmap.Format.RGB888);
+                    tretPixmap.setColor( Color.BLACK );
+                    tretPixmap.fill();
+                    tretTexture = new Texture(tretPixmap);
+                    spriteBatch.begin();
+                    spriteBatch.draw(tretTexture, sword.x+40, sword.y - 40);
+                    spriteBatch.end();
+                    break;
+                case "right":
+                    tretPixmap = new Pixmap( 60, 20, Pixmap.Format.RGB888);
+                    tretPixmap.setColor( Color.BLACK );
+                    tretPixmap.fill();
+                    tretTexture = new Texture(tretPixmap);
+                    spriteBatch.begin();
+                    spriteBatch.draw(tretTexture, sword.x + 80, sword.y + 20);
+                    spriteBatch.end();
+                    break;
+                case "left":
+                    tretPixmap = new Pixmap( 60, 20, Pixmap.Format.RGB888);
+                    tretPixmap.setColor( Color.BLACK );
+                    tretPixmap.fill();
+                    tretTexture = new Texture(tretPixmap);
+                    spriteBatch.begin();
+                    spriteBatch.draw(tretTexture, sword.x - 80, sword.y + 20);
+                    spriteBatch.end();
+                    break;
+            }
+
+        }else{
+            shoot = false;
+        }
+        if(shoot){
+            switch (state){
+                case "up":
+                    sword.y = (int) (sword.y + velocity.y);
+                    break;
+                case "down":
+                    sword.y = (int) (sword.y - velocity.y);
+                    break;
+                case "right":
+                    sword.x = (int) (sword.x + velocity.x);
+                    break;
+                case "left":
+                    sword.x = (int) (sword.x - velocity.x);
+                    break;
+            }
+        }
+        if(!shoot || sword.x >= 1200 || sword.x <= 0 || sword.y >= 800 || sword.y <= 0){
+            tretTexture.dispose();
+            sword.x = (int) posx;
+            sword.y = (int) posy;
         }
     }
 }
