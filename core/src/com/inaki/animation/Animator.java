@@ -202,7 +202,5 @@ public class Animator extends ApplicationAdapter {
             spriteBatch.draw(idle, posx, posy); // Draw current frame at (50, 50)
             spriteBatch.end();
         }
-        System.out.println(posx+","+posy);
-
     }
 }
