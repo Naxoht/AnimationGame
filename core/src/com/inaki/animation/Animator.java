@@ -27,7 +27,7 @@ public class Animator extends ApplicationAdapter {
     Texture background,background2,background3,statue;
     SpriteBatch spriteBatch;
     TextureRegion[] walkUp,walkRight,walkDown,walkLeft;
-    Texture idle,tretTexture;
+    Texture idle,swordImage;
     float posx,posy,tretPosx,tretPosY;
     Rectangle sword = new Rectangle();
     Vector2 velocity = new Vector2();
@@ -50,10 +50,12 @@ public class Animator extends ApplicationAdapter {
         posx = 580;
         walkSheet = new Texture(Gdx.files.internal("spritesheetLink2.png"));
         idle = new Texture(Gdx.files.internal("idle.PNG"));
-        tretPixmap = new Pixmap( 60, 20, Pixmap.Format.RGB888);
-        tretPixmap.setColor( Color.BLACK );
-        tretPixmap.fill();
-        tretTexture = new Texture(tretPixmap);
+//        tretPixmap = new Pixmap( 60, 20, Pixmap.Format.RGB888);
+//        tretPixmap.setColor( Color.BLACK );
+//        tretPixmap.fill();
+//        tretTexture = new Texture(tretPixmap);
+        swordImage = new Texture(Gdx.files.internal("sword.png"));
+
         sword.height = 20;
         sword.width = 60;
         velocity.x = 15;
@@ -233,39 +235,31 @@ public class Animator extends ApplicationAdapter {
             shoot = true;
             switch (state){
                 case "up":
-                    tretPixmap = new Pixmap( 20, 50, Pixmap.Format.RGB888);
-                    tretPixmap.setColor( Color.BLACK );
-                    tretPixmap.fill();
-                    tretTexture = new Texture(tretPixmap);
+                    swordImage = new Texture(Gdx.files.internal("swordUp.png"));
+
                     spriteBatch.begin();
-                    spriteBatch.draw(tretTexture, sword.x+40, sword.y + 40);
+                    spriteBatch.draw(swordImage, sword.x+10, sword.y + 80);
                     spriteBatch.end();
                     break;
                 case "down":
-                    tretPixmap = new Pixmap( 20, 50, Pixmap.Format.RGB888);
-                    tretPixmap.setColor( Color.BLACK );
-                    tretPixmap.fill();
-                    tretTexture = new Texture(tretPixmap);
+                    swordImage = new Texture(Gdx.files.internal("sword.png"));
+
                     spriteBatch.begin();
-                    spriteBatch.draw(tretTexture, sword.x+40, sword.y - 40);
+                    spriteBatch.draw(swordImage, sword.x+10, sword.y - 50);
                     spriteBatch.end();
                     break;
                 case "right":
-                    tretPixmap = new Pixmap( 60, 20, Pixmap.Format.RGB888);
-                    tretPixmap.setColor( Color.BLACK );
-                    tretPixmap.fill();
-                    tretTexture = new Texture(tretPixmap);
+                    swordImage = new Texture(Gdx.files.internal("swordRight.png"));
+
                     spriteBatch.begin();
-                    spriteBatch.draw(tretTexture, sword.x + 80, sword.y + 20);
+                    spriteBatch.draw(swordImage, sword.x + 80, sword.y + 10);
                     spriteBatch.end();
                     break;
                 case "left":
-                    tretPixmap = new Pixmap( 60, 20, Pixmap.Format.RGB888);
-                    tretPixmap.setColor( Color.BLACK );
-                    tretPixmap.fill();
-                    tretTexture = new Texture(tretPixmap);
+                    swordImage = new Texture(Gdx.files.internal("swordLeft.png"));
+
                     spriteBatch.begin();
-                    spriteBatch.draw(tretTexture, sword.x - 80, sword.y + 20);
+                    spriteBatch.draw(swordImage, sword.x - 80, sword.y + 10);
                     spriteBatch.end();
                     break;
             }
@@ -290,7 +284,7 @@ public class Animator extends ApplicationAdapter {
             }
         }
         if(!shoot || sword.x >= 1200 || sword.x <= 0 || sword.y >= 800 || sword.y <= 0){
-            tretTexture.dispose();
+            swordImage.dispose();
             sword.x = (int) posx;
             sword.y = (int) posy;
         }
